@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vanilla JS Calculator</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto;background:#0e1116;color:#e6e6e6;display:grid;place-items:center;min-height:100vh}
+    .calc{width:min(340px,92vw);background:#111318;border:1px solid #1e2128;border-radius:16px;padding:16px}
+    .screen{height:64px;border:1px solid #1e2128;border-radius:12px;padding:10px;font-size:28px;display:flex;justify-content:flex-end;align-items:center;background:#0b0c10;overflow:hidden}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    button{padding:14px;border-radius:12px;border:1px solid #1e2128;background:#0f1217;font-size:18px;color:#e6e6e6;cursor:pointer}
+    button:active{transform:translateY(1px)}
+    .op{background:#171a22}
+    .eq{background:#1e2430}
+    .span2{grid-column:span 2}
+  </style>
+</head>
+<body>
+  <div class="calc" role="application" aria-label="Calculator">
+    <div id="screen" class="screen" aria-live="polite">0</div>
+    <div class="grid">
+      <button class="op" data-k="C">C</button>
+      <button class="op" data-k="Backspace">⌫</button>
+      <button class="op" data-k="%">%</button>
+      <button class="op" data-k="/">÷</button>
+
+      <button data-k="7">7</button>
+      <button data-k="8">8</button>
+      <button data-k="9">9</button>
+      <button class="op" data-k="*">×</button>
+
+      <button data-k="4">4</button>
+      <button data-k="5">5</button>
+      <button data-k="6">6</button>
+      <button class="op" data-k="-">−</button>
+
+      <button data-k="1">1</button>
+      <button data-k="2">2</button>
+      <button data-k="3">3</button>
+      <button class="op" data-k="+">+</button>
+
+      <button class="span2" data-k="0">0</button>
+      <button data-k=".">.</button>
+      <button class="eq" data-k="=">=</button>
+    </div>
+  </div>
+
+  <script>
+    const screen = document.getElementById('screen');
+    let expr = '0';
+
+    function set(v){ expr = v; screen.textContent = v; }
+    function append(ch){
+      if(expr === '0' && /[0-9.]/.test(ch)) set(ch);
+      else set(expr + ch);
+    }
+    function compute(){
+      try {
+        const safe = expr.replace(/÷/g,'/').replace(/×/g,'*');
+        // percent converts like 50% -> 0.5
+        const p = safe.replace(/(\d+(?:\\.\\d+)?)%/g,(m,n)=> String(Number(n)/100));
+        const result = Function('return ('+p+')')(); // simple eval for demo
+        set(String(result));
+      } catch { set('Error'); }
+    }
+    function press(k){
+      if(k === 'C') return set('0');
+      if(k === 'Backspace') return set(expr.length>1? expr.slice(0,-1) : '0');
+      if(k === '=') return compute();
+      if('+-*/.%'.includes(k) || /[0-9.]/.test(k)) return append(k);
+    }
+
+    document.addEventListener('click', e=>{
+      const k = e.target?.dataset?.k;
+      if(k) press(k);
+    });
+    document.addEventListener('keydown', e=>{
+      const k = e.key === 'Enter' ? '=' : e.key;
+      if(('0123456789.+-*/%'.includes(k)) || k==='Backspace' || k==='=' ) {
+        e.preventDefault(); press(k);
+      }
+      if(k.toLowerCase()==='c') press('C');
+    });
+  </script>
+</body>
+</html>
