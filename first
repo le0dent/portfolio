@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple HTML Landing</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto;background:#0e1116;color:#e6e6e6}
+    .wrap{max-width:960px;margin:0 auto;padding:40px 24px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #1e2128}
+    .btn{display:inline-block;padding:12px 16px;border:1px solid #1e2128;border-radius:12px;background:#111318;text-decoration:none;color:#e6e6e6}
+    .hero{display:grid;gap:16px;grid-template-columns:1.2fr 1fr;align-items:center;padding:40px 0}
+    .card{border:1px solid #1e2128;border-radius:16px;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+    @media (max-width:860px){.hero{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <strong>Simple HTML Landing</strong>
+      <a class="btn" href="../">Back to Portfolio</a>
+    </header>
+
+    <section class="hero">
+      <div class="card">
+        <h1 style="margin:0 0 10px">Clean landing headline</h1>
+        <p style="opacity:.8;margin:0 0 16px">
+          One-paragraph pitch of your project. State the value in one sentence.
+        </p>
+        <a class="btn" href="#">Primary Action</a>
+      </div>
+      <div class="card">
+        <p style="opacity:.8;margin:0">Use this as a template. Replace text and links later.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
