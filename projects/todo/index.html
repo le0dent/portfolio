@@ -1,1 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Todo List (localStorage)</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto;background:#0e1116;color:#e6e6e6;display:grid;place-items:center;min-height:100vh}
+    .app{width:min(520px,94vw);background:#111318;border:1px solid #1e2128;border-radius:16px;padding:18px}
+    h1{margin:6px 0 14px}
+    .row{display:flex;gap:8px}
+    input{flex:1;padding:12px;border-radius:12px;border:1px solid #1e2128;background:#0b0c10;color:#e6e6e6}
+    button{padding:12px 16px;border-radius:12px;border:1px solid #1e2128;background:#0f1217;color:#e6e6e6;cursor:pointer}
+    ul{list-style:none;margin:14px 0 0;padding:0}
+    li{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #1e2128;border-radius:12px;background:#0f1217;margin-bottom:10px}
+    li.done{opacity:.7;text-decoration:line-through}
+    .spacer{flex:1}
+  </style>
+</head>
+<body>
+  <div class="app" aria-label="Todo app">
+    <h1>Todo</h1>
+    <div class="row">
+      <label for="new" class="sr-only" style="position:absolute;left:-9999px">New task</label>
+      <input id="new" type="text" placeholder="What needs to be done?" />
+      <button id="add">Add</button>
+    </div>
+    <ul id="list" role="list"></ul>
+  </div>
 
+  <script>
+    const KEY = 'todos.v1';
+    const list = document.getElementById('list');
+    const input = document.getElementById('new');
+
+    let todos = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+    function save(){ localStorage.setItem(KEY, JSON.stringify(todos)); }
+    function render(){
+      list.innerHTML = '';
+      todos.forEach((t,i)=>{
+        const li = document.createElement('li');
+        li.className = t.done ? 'done' : '';
+        const cb = document.createElement('input'); cb.type='checkbox'; cb.checked=t.done;
+        cb.addEventListener('change', ()=>{ t.done = cb.checked; save(); render(); });
+        const span = document.createElement('span'); span.textContent = t.text;
+        const spacer = document.createElement('div'); spacer.className='spacer';
+        const del = document.createElement('button'); del.textContent='Delete';
+        del.addEventListener('click', ()=>{ todos.splice(i,1); save(); render(); });
+        li.append(cb, span, spacer, del); list.append(li);
+      });
+    }
+    function add(){
+      const text = input.value.trim();
+      if(!text) return;
+      todos.push({text, done:false}); input.value=''; save(); render();
+    }
+    document.getElementById('add').addEventListener('click', add);
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') add(); });
+
+    render();
+  </script>
+</body>
+</html>
